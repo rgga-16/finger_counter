@@ -28,7 +28,7 @@ def train(model, train_loader, optimizer, epochs, weights_dir, test_loader=None)
 
     handtype_criterion = torch.nn.BCELoss().to(device)
 
-    count_criterion = torch.nn.CrossEntropyLoss().float().to(device)
+    count_criterion = torch.nn.CrossEntropyLoss()
 
 
     for ep in range(epochs):
@@ -45,8 +45,12 @@ def train(model, train_loader, optimizer, epochs, weights_dir, test_loader=None)
             # pred_counts=pred_counts.type(torch.float64).to(device)
 
             handtype_loss = handtype_criterion(pred_handtypes.squeeze(),real_handtypes)
+            real_counts = real_counts.to(torch.int64)
 
-            counts_loss = count_criterion(pred_counts,real_counts) #BUG: 
+            #BUG: "nll_loss_forward_reduce_cuda_kernel_2d_index" not implemented for 'Float'
+            # Fixed by casting real_counts to torch.int64
+            counts_loss = count_criterion(pred_counts,real_counts) 
+
             total_loss = handtype_loss + counts_loss
             total_loss.backward()
             optimizer.step()
