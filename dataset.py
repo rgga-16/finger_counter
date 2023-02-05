@@ -14,9 +14,10 @@ data_transforms = {
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
             ]),
             'test': transforms.Compose([
-                # transforms.Resize(256),
+                transforms.Resize((128,128)),
                 # transforms.CenterCrop(224),
                 transforms.ToTensor(),
+                transforms.Grayscale(num_output_channels=3),
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
             ]),
 }
